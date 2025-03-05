@@ -16,7 +16,6 @@ function is_jwt_valid($jwt, $secret): bool
 {
     // split the jwt
     $tokenParts = explode('.', $jwt);
-    //print_r($tokenParts);
     $header = base64_decode($tokenParts[0]);
     $payload = base64_decode($tokenParts[1]);
     $signature_provided = $tokenParts[2];
@@ -81,4 +80,20 @@ function get_bearer_token(): ?string
         }
     }
     return null;
+}
+
+function encode($login) : string {
+    $headers = array("alg" => "HS256", "typ" => "JWT");
+    $payload = array("login" => $login, "exp" => time() + 3600);
+    return generate_jwt($headers, $payload, 45000);
+}
+
+function is_valid_token($jwt): bool {
+    return is_jwt_valid($jwt,45000);
+}
+
+function refreshJwt($jwt) : string {
+    $tokenParts = explode(".", $jwt);
+    $payload = json_decode(base64_decode($tokenParts[1]),true);
+    return encode($payload["login"]);
 }
