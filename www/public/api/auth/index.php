@@ -43,8 +43,8 @@ elseif($_SERVER["REQUEST_METHOD"] == "PATCH") {
     if(is_valid_token($data["token"])){
         $response = array("status_message" => "OK", "status_code" => 200, "token" => refreshJwt($data["token"]));
     }else{
-        http_response_code(400);
-        $response = array("status_message" => "Token is invalid", "status_code" => 400);
+        http_response_code(405);
+        $response = array("status_message" => "Token is invalid", "status_code" => 405);
     }
 }
 else{
