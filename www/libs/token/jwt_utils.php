@@ -16,6 +16,9 @@ function is_jwt_valid($jwt, $secret): bool
 {
     // split the jwt
     $tokenParts = explode('.', $jwt);
+    if(count($tokenParts) != 3) {
+        return FALSE;
+    }
     $header = base64_decode($tokenParts[0]);
     $payload = base64_decode($tokenParts[1]);
     $signature_provided = $tokenParts[2];

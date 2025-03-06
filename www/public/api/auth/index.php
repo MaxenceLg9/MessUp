@@ -8,46 +8,45 @@ header('Content-Type: application/json');
 
 http_response_code(200);
 
-$data = json_decode(file_get_contents("php://input"), true);
+$jsonBody = json_decode(file_get_contents("php://input"), true);
 
-//var_dump($data);
 
 //send only data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //login and password defined => creating the token
-    if (isset($data["login"]) && isset($data["password"])) {
+    if (isset($jsonBody["login"]) && isset($jsonBody["password"])) {
         //check validity/truth of the login credentials
 
         //generate the response and so the token
-        $response = array("status_message" => "OK", "status_code" => 200, "token" => encode($data["login"]));
+        $response = array("response" => "OK", "status" => 200, "token" => encode($jsonBody["login"]));
     }
     //the case to check the token authenticity
-    elseif(isset($data["token"])){
+    elseif(isset($jsonBody["token"])){
         //valid or not
-        if(is_valid_token($data["token"])){
-            $response = array("status_message" => "OK", "status_code" => 200,"valid"=> true);
+        if(is_valid_token($jsonBody["token"])){
+            $response = array("response" => "OK", "status" => 200,"valid"=> true);
         }else{
             http_response_code(400);
-            $response = array("status_message" => "Token is invalid", "status_code" => 400,"valid"=> false);
+            $response = array("response" => "Token is invalid", "status" => 400,"valid"=> false);
         }
     }
     //default case
     else {
         http_response_code(400);
-        $response = array("status_message" => "Please provide a token", "status_code" => 400);
+        $response = array("response" => "Please provide a token", "status" => 400);
     }
 }
 //update the token (refresh exp time)
 elseif($_SERVER["REQUEST_METHOD"] == "PATCH") {
     //if valid, refreshing token
-    if(is_valid_token($data["token"])){
-        $response = array("status_message" => "OK", "status_code" => 200, "token" => refreshJwt($data["token"]));
+    if(is_valid_token($jsonBody["token"])){
+        $response = array("response" => "OK", "status" => 200, "token" => refreshJwt($jsonBody["token"]));
     }else{
         http_response_code(405);
-        $response = array("status_message" => "Token is invalid", "status_code" => 405);
+        $response = array("response" => "Token is invalid", "status" => 405);
     }
 }
 else{
-    $response = array("status_message" => "Unsupported method", "status_code" => 400, "token" => "");
+    $response = array("response" => "Unsupported method", "status" => 400, "token" => "");
 }
 echo json_encode($response);
