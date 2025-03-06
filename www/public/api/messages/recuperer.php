@@ -3,43 +3,36 @@
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Message.php";
 
 use function Message\getLastMessages;
+use function Message\getPreviousMessages;
 
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $headers = apache_request_headers();
-//    if(true){
-    if(isset($headers["Authorization"])) {
-        if(isset($_GET["idSalle"])) {
-            $idSalle = $_GET["idSalle"];
-            http_response_code(200);
-            $message = array("status" => 200, "response" => "10 derniers messages récupérés");
-            if (isset($_GET["idMessage"])) {
-                $id = $_GET["idMessage"];
+    if(isset($_GET["idSalle"])) {
+        $idSalle = $_GET["idSalle"];
+        http_response_code(200);
+        $message = array("status" => 200);
+        if (isset($_GET["idMessage"]) && isset($_GET["last"])) {
+            $id = $_GET["idMessage"];
+            if($_GET["last"] == "1") {
+                $message["response"] = "10 derniers messages récupérés à partir du message : ".$id;
                 $message["data"] = getLastMessages($id, $idSalle);
-            } else {
-                $message["data"] = getLastMessages(0, $idSalle);
             }
-        }  else {
-            http_response_code(405);
-            $message = [];
-            $message["status"] = 405;
-            $message["message"] = "IdSalle is required";
-            $message["data"] = [];
+            else {
+                $message["response"] = "10 précédents messages récupérés à partir du message : " . $id;
+                $message["data"] = getPreviousMessages($id, $idSalle);
+            }
+        } else {
+            $message["response"] = "10 derniers messages récupérés";
+            $message["data"] = getLastMessages(0, $idSalle);
         }
-    }else{
-        http_response_code(403);
-        $message = [];
-        $message["status"] = 403;
-        $message["message"] = "Authentification is required to access this resource";
-        $message["data"] = [];
+    }  else {
+        http_response_code(405);
+        $message = array("status" => 405, "response" => "IdSalle is required", "data" => []);
     }
-    echo json_encode($message);
 }else{
-    http_response_code(405);
-    $message = [];
-    $message["status"] = 405;
-    $message["message"] = "You are not allowed to access this method";
-    $message["data"] = [];
-    echo json_encode($message);
+    http_response_code(403);
+    $message = array("status" => 403, "response" => "You are not allowed to access this method", "data" => []);
 }
+echo json_encode($message);
