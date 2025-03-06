@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Message{
+namespace Message {
 
     use PDO;
 
@@ -35,14 +35,28 @@ namespace Message{
         return $query -> fetchAll(PDO::FETCH_ASSOC)[0]["content"];
     }
 
-    function getLastMessages(int $id,int $idSalle) : array{
+    function getLastMessages(int $id,int $idSalle): array{
         $pdo = creerConnexion();
 
-        $query = $pdo->prepare("SELECT * FROM message WHERE idSalle = :idSalle AND idMessage > :id ORDER BY idMessage ASC LIMIT 10");
-        $query->bindParam(":idSalle",$idSalle);
-        $query->bindParam(":id",$id);
+        $query = $pdo->prepare("SELECT * FROM 
+             (SELECT * FROM message WHERE idSalle = :idSalle AND idMessage > :id ORDER BY idMessage DESC LIMIT 50)
+                 AS subquery ORDER BY idMessage ");
+        $query->bindParam(":idSalle", $idSalle);
+        $query->bindParam(":id", $id);
         $query->execute();
 
-        return $query -> fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function getPreviousMessages(int $id, int $idSalle): array
+    {
+        $pdo = creerConnexion();
+
+        $query = $pdo->prepare("SELECT * FROM message WHERE idSalle = :idSalle AND idMessage < :id ORDER BY idMessage DESC LIMIT 50");
+        $query->bindParam(":idSalle", $idSalle);
+        $query->bindParam(":id", $id);
+        $query->execute();
+
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }
