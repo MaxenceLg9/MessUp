@@ -1,9 +1,11 @@
 <?php
 
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/token/jwt_utils.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Users.php";
+
+use function Users\checkUser;
 
 header('Access-Control-Allow-Origin: *');
-
 header('Content-Type: application/json');
 
 http_response_code(200);
@@ -16,9 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //login and password defined => creating the token
     if (isset($jsonBody["login"]) && isset($jsonBody["password"])) {
         //check validity/truth of the login credentials
-
-        //generate the response and so the token
-        $response = array("response" => "OK", "status" => 200, "token" => encode($jsonBody["login"]));
+        $user = checkUser($jsonBody["login"], $jsonBody["password"]);
+        if(empty($user)){
+            http_response_code(400);
+            $response = array("response" => "Invalid login or password", "status" => 400);
+        }else {
+            //generate the response and so the token
+            $response = array("response" => "OK", "status" => 200, "token" => encode($user["username"],$user["idUser"]));
+        }
     }
     //the case to check the token authenticity
     elseif(isset($jsonBody["token"])){
@@ -37,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 //update the token (refresh exp time)
-elseif($_SERVER["REQUEST_METHOD"] == "PATCH") {
+elseif($_SERVER["REQUEST_METHOD"] == "PUT") {
     //if valid, refreshing token
     if(is_valid_token($jsonBody["token"])){
         $response = array("response" => "OK", "status" => 200, "token" => refreshJwt($jsonBody["token"]));

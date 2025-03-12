@@ -85,9 +85,9 @@ function get_bearer_token(): ?string
     return null;
 }
 
-function encode($login) : string {
+function encode($login,$id) : string {
     $headers = array("alg" => "HS256", "typ" => "JWT");
-    $payload = array("login" => $login, "exp" => time() + 3600);
+    $payload = array("login" => $login, "id" => $id, "exp" => time() + 3600);
     return generate_jwt($headers, $payload, 45000);
 }
 
@@ -96,7 +96,11 @@ function is_valid_token($jwt): bool {
 }
 
 function refreshJwt($jwt) : string {
-    $tokenParts = explode(".", $jwt);
-    $payload = json_decode(base64_decode($tokenParts[1]),true);
-    return encode($payload["login"]);
+    $payload = getPayload($jwt);
+    return encode($payload["login"],$payload["id"]);
+}
+
+function getPayload(string $token): array{
+    $tokenParts = explode('.', $token);
+    return json_decode(base64_decode($tokenParts[1]), true);
 }
