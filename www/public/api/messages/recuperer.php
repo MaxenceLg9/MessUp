@@ -7,6 +7,7 @@ use function Message\getPreviousMessages;
 
 header('Content-Type: application/json');
 
+
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $headers = apache_request_headers();
     if(isset($_GET["idSalle"])) {
