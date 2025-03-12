@@ -47,7 +47,7 @@ namespace Message {
 
         $query = $pdo -> prepare("INSERT INTO message (content,time,idUser,idSalle) VALUES (:message,:time,:idUser,:idSalle)");
 
-        $date = date("Y-m-d H:i:s");
+        $date = (new DateTime())->format("Y-m-d H:i:s");
 
         $query->bindParam(":message",$message);
         $query->bindParam(":time",$date);
