@@ -1,7 +1,7 @@
 <?php
 
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/token/jwt_utils.php";
-function apiVerifyToken(): void
+function apiVerifyToken(): bool
 {
 //    echo get_authorization_header();
     $url = "messup.app/api/auth/";
@@ -19,8 +19,5 @@ function apiVerifyToken(): void
     $response = curl_exec($ch);
     curl_close($ch);
 
-     if(json_decode($response,true)["valid"] == false){
-         header("Location: /vue/login.php");
-         die();
-     }
+     return (json_decode($response, true)["valid"]);
 }
