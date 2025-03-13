@@ -30,117 +30,124 @@ function hasHeaderRoom(){
     return divMessage.children(".header").length > 0
 }
 
-function refreshMessages(idMessage,idSalle,last){
-    console.log("Fetching messages : Message " + idMessage + " Salle " + idSalle + " Last? " + last)
+async function refreshMessages(idMessage, idSalle, last) {
+    console.log(`Fetching messages: Message ${idMessage}, Salle ${idSalle}, Last? ${last}`);
+
     const previousScrollHeight = divMessage[0].scrollHeight;
     const previousScrollTop = divMessage.scrollTop();
-    //request to get the last messages
-    $.ajax("/api/messages/recuperer.php",{
-        method:"GET",
-        data:{
-            "idSalle":idSalle,
-            "idMessage":idMessage,
-            "last":last
-        },
-    }).done(function(query){
-        console.log(query)
-        const message = query.data
-        if(message.length > 0) {
 
+    try {
+        const response = await $.ajax("/api/messages/recuperer.php", {
+            method: "GET",
+            data: {
+                "idSalle": idSalle,
+                "idMessage": idMessage,
+                "last": last
+            }
+        });
+
+        console.log(response);
+        const messages = response.data;
+
+        if (messages.length > 0) {
             if (last === 0) {
-                firstID = message[message.length - 1].idMessage
+                firstID = messages[messages.length - 1].idMessage;
             }
-            if(firstID === -1){
-                firstID = message[0].idMessage
+            if (firstID === -1) {
+                firstID = messages[0].idMessage;
             }
-            for (let i = 0; i < message.length; i++) {
-                const line = message[i]
+            for (const line of messages) {
                 const messageDiv = createMessage(line);
                 if (last === 1) {
-                    divMessage.append(messageDiv)
+                    divMessage.append(messageDiv);
                 } else {
-                    divMessage.prepend(messageDiv)
+                    divMessage.prepend(messageDiv);
                     time--;
                 }
             }
         }
-        if(last === 0){
+
+        if (last === 0) {
             divMessage.scrollTop(previousScrollTop + (divMessage[0].scrollHeight - previousScrollHeight));
-            if(message.length < 20 && !hasHeaderRoom())
-                divMessage.prepend(createHeaderRoom(idSalle))
-        }else{
+            if (messages.length < 20 && !hasHeaderRoom()) {
+                divMessage.prepend(createHeaderRoom(idSalle));
+            }
+        } else {
             divMessage.scrollTop(divMessage[0].scrollHeight);
         }
-        if(idMessage === 0 && last === 1 && message.length < 20 && !hasHeaderRoom()){
-            divMessage.prepend(createHeaderRoom(idSalle))
+
+        if (idMessage === 0 && last === 1 && messages.length < 20 && !hasHeaderRoom()) {
+            divMessage.prepend(createHeaderRoom(idSalle));
         }
-    }).fail(function(xhr) {
-        console.log(xhr.responseText);
-        //pop up
+
+    } catch (xhr) {
+        console.error(xhr.responseText);
         try {
-            const json = JSON.parse(xhr.responseText); // Try parsing JSON
-            alert(json.response); // Alert the 'response' key from the JSON
+            const json = JSON.parse(xhr.responseText);
+            alert(json.response);
         } catch (e) {
             console.error("Could not parse response as JSON:", xhr.responseText);
             alert("An error occurred, but the response is not valid JSON.");
         }
-    })
+    }
 }
 
 
 
-function newMessage(content,idSalle){
-    console.log("Sending message : " + content + " at  " + idSalle)
-    //request to get the last messages
-    $.ajax("/api/messages/enregistrer.php",{
-        method:"POST",
-        data:JSON.stringify({            // Convert data to JSON string
-            "idSalle": idSalle,
-            "message": content,
-            "idUser": 1
-        }),
-        contentType:"application/json"
-    }).done(function(query){
-        console.log(query)
-        const message = query.data
+async function newMessage(content, idSalle) {
+    console.log("Sending message:", content, "at", idSalle);
+
+    try {
+        const response = await $.ajax("/api/messages/enregistrer.php", {
+            method: "POST",
+            data: JSON.stringify({
+                "idSalle": idSalle,
+                "message": content,
+                "idUser": 1
+            }),
+            contentType: "application/json"
+        });
+
+        console.log(response);
+        const message = response.data;
 
         divMessage.append(createMessage(message[0]));
         divMessage.scrollTop(divMessage[0].scrollHeight);
-        inputCreateMessage.val("")
-    }).fail(function(xhr) {
-        console.log(xhr.responseText);
-        //pop up
+        inputCreateMessage.val("");
+
+    } catch (xhr) {
+        console.error(xhr.responseText);
         try {
-            const json = JSON.parse(xhr.responseText); // Try parsing JSON
-            alert(json.response); // Alert the 'response' key from the JSON
+            const json = JSON.parse(xhr.responseText);
+            alert(json.response);
         } catch (e) {
             console.error("Could not parse response as JSON:", xhr.responseText);
             alert("An error occurred, but the response is not valid JSON.");
         }
-    })
+    }
 }
 
-divMessage.on("scroll",function(){
+divMessage.on("scroll",async function(){
     if(divMessage.scrollTop() === 0) {
         console.log("Scrolling and loading oldest messages")
-        refreshMessages(firstID, salle, 0)
+        await refreshMessages(firstID, salle, 0)
     }
 })
-inputCreateMessage.on("keypress",function(event){
+inputCreateMessage.on("keypress",async function(event){
     if(event.key === "Enter"){
         console.log("Sending message")
         console.log(inputCreateMessage.val())
-        newMessage(inputCreateMessage.val(),salle)
+        await newMessage(inputCreateMessage.val(),salle)
     }
 })
 
-rooms.children("li").on("click", function() {
+rooms.children("li").on("click", async function() {
     salle = $(this).attr("value");
     divMessage.empty()
     lastID = 0
     firstID = -1
     time = 125
-    refreshMessages(0,salle,1)
+    await refreshMessages(0,salle,1)
 });
 // setInterval(() => refreshMessages(lastID,salle,1),2000)
 // $(document).ready(() => refreshMessages(0,salle,1))
