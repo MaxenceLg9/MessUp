@@ -32,7 +32,7 @@ $user = "Maxence"
     <section id="channel">
         <div id="content"></div>
         <div class="input-container">
-            <input type="text" id="message" placeholder="Type your message...">
+            <label for="message"></label><input type="text" id="message" placeholder="Type your message...">
             <button id="send">Send</button>
         </div>
         <div class="user">
