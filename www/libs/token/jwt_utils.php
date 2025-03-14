@@ -51,7 +51,9 @@ function base64url_encode($data): string
 function get_authorization_header(): ?string
 {
     $headers = null;
-
+    if(isset($_COOKIE["token"])) {
+        return $_COOKIE["token"];
+    }
     if (isset($_SERVER['Authorization'])) {
         $headers = trim($_SERVER["Authorization"]);
     } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
