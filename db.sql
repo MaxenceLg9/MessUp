@@ -7,7 +7,7 @@ USE messup;
 CREATE TABLE users (
     idUser int PRIMARY KEY AUTO_INCREMENT,
     picture BINARY,
-    username VARCHAR(50),
+    username VARCHAR(50) UNIQUE,
     password VARCHAR(60)
 );
 
