@@ -30,17 +30,26 @@ nav {
     color: white;
     padding: 20px;
     border-radius: 10px;
+    overflow: scroll;
+    justify-content: space-between;
+}
+
+ul {
+    padding: 10px 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 7px;
 }
 
 ul#rooms {
-    padding: 0;
-    margin: 0;
+    border-bottom: 1px solid #8395a6;
 }
 
 li {
     list-style-type: none;
     padding: 10px;
-    margin: 5px 0;
     background: #34495e;
     border-radius: 5px;
     cursor: pointer;
