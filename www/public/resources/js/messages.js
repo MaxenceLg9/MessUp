@@ -3,8 +3,9 @@ let lastID = 0
 let firstID = -1
 let inputCreateMessage = $("input#message")
 let time = 125
-let salle = 0
+let salle = 1
 let rooms = $("ul#rooms");
+let btnDisconnect = $("li#disconnect")
 
 function createMessage(line) {
     lastID = Math.max(lastID, line.idMessage)
@@ -72,10 +73,7 @@ async function refreshMessages(idMessage, idSalle, last) {
             if (messages.length < 20 && !hasHeaderRoom()) {
                 divMessage.prepend(createHeaderRoom(idSalle));
             }
-        } else {
-            divMessage.scrollTop(divMessage[0].scrollHeight);
         }
-
         if (idMessage === 0 && last === 1 && messages.length < 20 && !hasHeaderRoom()) {
             divMessage.prepend(createHeaderRoom(idSalle));
         }
@@ -127,6 +125,11 @@ async function newMessage(content, idSalle) {
     }
 }
 
+function disconnect(){
+    Cookies.set("token","")
+    window.location = "/"
+}
+
 divMessage.on("scroll",async function(){
     if(divMessage.scrollTop() === 0) {
         console.log("Scrolling and loading oldest messages")
@@ -149,5 +152,12 @@ rooms.children("li").on("click", async function() {
     time = 125
     await refreshMessages(0,salle,1)
 });
-// setInterval(() => refreshMessages(lastID,salle,1),2000)
+
+btnDisconnect.on("click",function (e){
+    disconnect()
+})
+
+
+rooms.children("li").first().trigger("click");
+setInterval(async () => await refreshMessages(lastID,salle,1),2000)
 // $(document).ready(() => refreshMessages(0,salle,1))
