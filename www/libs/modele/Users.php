@@ -25,7 +25,7 @@ namespace Users {
     {
         $pdo = creerConnexion();
 
-        $query = $pdo -> prepare("SELECT * FROM users WHERE idUser = :id");
+        $query = $pdo -> prepare("SELECT username FROM users WHERE idUser = :id");
         $query->bindParam(":id",$id);
         $query->execute();
         return $query -> fetchAll(PDO::FETCH_ASSOC);
@@ -35,13 +35,25 @@ namespace Users {
     {
         $pdo = creerConnexion();
 
-        $query = $pdo -> prepare("SELECT * FROM users WHERE username = :username");
+        $query = $pdo -> prepare("SELECT password,username,idUser FROM users WHERE username = :username");
         $query->bindParam(":username",$username);
         $query->execute();
         $user = $query -> fetchAll(PDO::FETCH_ASSOC);
+        if(!isset($user[0]))
+            return [];
         if(password_verify($password, $user[0]["password"])){
-            return $user;
+            return $user[0];
         }
         return [];
+    }
+
+    function getUserByUsername(string $username): array
+    {
+        $pdo = creerConnexion();
+
+        $query = $pdo -> prepare("SELECT * FROM users WHERE username = :username");
+        $query->bindParam(":username",$username);
+        $query->execute();
+        return $query -> fetchAll(PDO::FETCH_ASSOC);
     }
 }
