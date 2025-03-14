@@ -3,10 +3,11 @@
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/token/jwt_utils.php";
 function apiVerifyToken(): bool
 {
-//    echo get_authorization_header();
+//    echo "Auth ".get_authorization_header();
+    $token = get_authorization_header() ?? "";
     $url = "messup.app/api/auth/";
     $data = json_encode([
-        "token"=> "1"
+        "token"=> $token
     ]);
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, true);
