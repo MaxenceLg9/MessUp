@@ -14,8 +14,14 @@ if(!apiVerifyToken()){
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jsonBody = json_decode(file_get_contents('php://input'), true);
     if(isset($jsonBody["message"]) && isset($jsonBody["idSalle"]) && isset($jsonBody["idUser"])) {
-        $data = nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $jsonBody["idUser"]);
-        $message = array("status" => 200, "response" => "Message bien ajouté", "data" => $data);
+        $jsonBody["message"] = trim($jsonBody["message"]);
+        if($jsonBody["message"] === "") {
+            http_response_code(400);
+            $message = array("status" => 400, "response" => "Message cannot be empty", "data" => []);
+        }else{
+            $data = nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $jsonBody["idUser"]);
+            $message = array("status" => 200, "response" => "Message bien ajouté", "data" => $data);
+        }
     }
     else {
         http_response_code(400);
