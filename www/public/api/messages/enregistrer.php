@@ -22,21 +22,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jsonBody = json_decode(file_get_contents('php://input'), true);
     if(isset($jsonBody["message"]) && isset($jsonBody["idSalle"])) {
         $jsonBody["message"] = trim($jsonBody["message"]);
-        if($jsonBody["message"] === "") {
-            http_response_code(400);
+        if ($jsonBody["message"] === "") {
             $message = array("status" => 400, "response" => "Message cannot be empty", "data" => []);
+        } else if ($jsonBody["idSalle"] > 10 || $jsonBody["idSalle"] < 1) {
+            $message = array("status" => 400, "response" => "Salle must be between 1 and 10", "data" => []);
         }else{
-            $data = nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $idUser);
-            $message = array("status" => 200, "response" => "Message bien ajouté", "data" => $data);
+            $message = array("status" => 200, "response" => "Message bien ajouté", "data" => nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $idUser));
         }
     }
     else {
-        http_response_code(400);
         $message = array("status" => 400, "response" => "Message, salle and author are required", "data" => []);
     }
 }else{
-    http_response_code(405);
-    header('Content-Type: application/json');
     $message = array("status" => 405, "response" => "Method not allowed", "data" => []);
 }
+http_response_code($message["status"]);
 echo json_encode($message);
