@@ -1,15 +1,24 @@
 <?php
 
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Message.php";
 
 use function Message\getLastMessages;
 use function Message\getPreviousMessages;
+use function Token\apiVerifyToken;
+use function Token\getPayload;
 
 header('Content-Type: application/json');
 
+if(!apiVerifyToken()){
+    http_response_code(401);
+    $message = array("status" => 401, "response" => "Unauthorized", "data" => []);
+    echo json_encode($message);
+    die();
+}
+
 
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $headers = apache_request_headers();
     if(isset($_GET["idSalle"])) {
         $idSalle = $_GET["idSalle"];
         http_response_code(200);

@@ -1,11 +1,12 @@
 <?php
 
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/token/jwt_utils.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Users.php";
 
 use function Users\checkUser;
 use function Users\newUser;
 use function Users\getUserByUsername;
+use function Token\encode,Token\is_valid_token,Token\refreshJwt;
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -27,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (!empty($user)) {
                     $response = array("response" => "Username déjà pris", "status" => 400);
                 } else if(empty(newUser($jsonBody["username"], $jsonBody["password"]))){
-
                     $response = array("response" => "Erreur lors de la création de l'utilisateur", "status" => 400);
                 } else {
                     $response = array("response" => "OK", "status" => 200);
@@ -42,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 //generate the response and so the token
                 $response = array("response" => "OK", "status" => 200, "token" => encode($user["username"], $user["idUser"]));
-                setcookie("token", $response["token"], time() + 900, "/");
             }
         }
     }
