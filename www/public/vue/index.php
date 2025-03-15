@@ -1,6 +1,8 @@
 <?php
+
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
 
+use function Token\apiVerifyToken,Token\getPayload;
 
 if(!apiVerifyToken()){
     header("Location: /auth.php");
@@ -8,7 +10,8 @@ if(!apiVerifyToken()){
 }
 
 $body = file_get_contents('php://input');
-$user = "Maxence"
+
+$user = getPayload()["login"];
 ?>
 <!doctype html>
 <html lang="fr">

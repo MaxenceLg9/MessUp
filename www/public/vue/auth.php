@@ -2,6 +2,8 @@
 
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
 
+use function Token\apiVerifyToken;
+
 if(apiVerifyToken()){
     header("Location: /index.php");
     die();
@@ -34,6 +36,7 @@ if(apiVerifyToken()){
     <input type="password" id="confirmpassword" name="confirmpassword">
     <button id="register">Inscription</button>
 </form>
+<p id="toggle">Vous n'avez pas de compte?</p>
 <button id="toggle">S'Inscrire</button>
 </body>
 <script src="../resources/js/auth.js"></script>
