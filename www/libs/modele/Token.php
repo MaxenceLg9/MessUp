@@ -5,7 +5,6 @@ namespace Token {
     use function Users\getUser;
 
     function apiVerifyToken(): bool {
-//    echo "Auth ".get_authorization_header();
         $token = get_bearer_token() ?? "";
         $url = "messup.app/api/auth/";
         $data = json_encode([
@@ -23,6 +22,26 @@ namespace Token {
         curl_close($ch);
 
         return (json_decode($response, true)["valid"]);
+    }
+
+    function apiReloadToken(): string {
+        $token = get_bearer_token() ?? "";
+        $url = "messup.app/api/auth/";
+        $data = json_encode([
+            "token" => $token
+        ]);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT"); // Correct way to use PUT with a request body
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true)["token"];
     }
 
 
@@ -112,9 +131,7 @@ namespace Token {
     {
         $headers = array("alg" => "HS256", "typ" => "JWT");
         $payload = array("login" => $login, "id" => $id, "exp" => time() + 1800);
-        $token = "Bearer " . generate_jwt($headers, $payload, "bar-mitzvah");
-        setcookie("token", $token, time() + 900, "/");
-        return $token;
+        return "Bearer " . generate_jwt($headers, $payload, "bar-mitzvah");
     }
 
     function is_valid_token($jwt): bool {

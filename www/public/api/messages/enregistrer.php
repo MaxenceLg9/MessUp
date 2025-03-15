@@ -4,8 +4,7 @@ require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Message.php";
 require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
 
 use function Message\nouveauMessage;
-use function Token\apiVerifyToken;
-use function Token\getPayload;
+use function Token\apiVerifyToken,Token\getPayload,Token\apiReloadToken;
 
 header('Content-Type: application/json');
 
@@ -27,7 +26,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else if ($jsonBody["idSalle"] > 10 || $jsonBody["idSalle"] < 1) {
             $message = array("status" => 400, "response" => "Salle must be between 1 and 10", "data" => []);
         }else{
-            $message = array("status" => 200, "response" => "Message bien ajouté", "data" => nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $idUser));
+            $token = apiReloadToken();
+            setcookie("token",$token,time() + 1800,"/");
+            $message = array("status" => 200, "response" => "Message bien ajouté", "data" => nouveauMessage($jsonBody["message"], $jsonBody["idSalle"], $idUser), "token" => $token);
         }
     }
     else {

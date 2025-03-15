@@ -41,7 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $response = array("response" => "Invalid login or password", "status" => 400);
             } else {
                 //generate the response and so the token
-                $response = array("response" => "OK", "status" => 200, "token" => encode($user["username"], $user["idUser"]));
+                $token = encode($user["username"], $user["idUser"]);
+                setcookie("token",$token,time() + 1800,"/");
+                $response = array("response" => "OK", "status" => 200, "token" => $token);
             }
         }
     }
@@ -65,7 +67,7 @@ elseif($_SERVER["REQUEST_METHOD"] == "PUT") {
     if(is_valid_token($jsonBody["token"])){
         $response = array("response" => "OK", "status" => 200, "token" => refreshJwt($jsonBody["token"]));
     }else{
-        $response = array("response" => "Token is invalid", "status" => 405);
+        $response = array("response" => "Token is invalid", "status" => 405, "token"=>"");
     }
 }
 else{
