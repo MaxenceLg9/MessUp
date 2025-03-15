@@ -28,7 +28,7 @@ namespace Users {
         $query = $pdo -> prepare("SELECT username FROM users WHERE idUser = :id");
         $query->bindParam(":id",$id);
         $query->execute();
-        return $query -> fetchAll(PDO::FETCH_ASSOC);
+        return $query -> fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
     }
 
     function checkUser(string $username, string $password): array
