@@ -44,7 +44,8 @@ async function refreshMessages(idMessage, idSalle, last) {
                 "idSalle": idSalle,
                 "idMessage": idMessage,
                 "last": last
-            }
+            },
+            headers: {"Authorization": Cookies.get("token")}
         });
 
         console.log(response);
@@ -103,7 +104,8 @@ async function newMessage(content, idSalle) {
                 "message": content,
                 "idUser": 1
             }),
-            contentType: "application/json"
+            contentType: "application/json",
+            headers: {"Authorization": Cookies.get("token")}
         });
 
         console.log(response);
@@ -137,7 +139,7 @@ divMessage.on("scroll",async function(){
     }
 })
 inputCreateMessage.on("keypress",async function(event){
-    if(event.key === "Enter"){
+    if(event.keyCode === 13){
         console.log("Sending message")
         console.log(inputCreateMessage.val())
         await newMessage(inputCreateMessage.val(),salle)

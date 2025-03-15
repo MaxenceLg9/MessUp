@@ -3,6 +3,7 @@ let formLogin = $("form#login")
 let buttonRegister = $("button#register")
 let formRegister = $("form#register")
 let toggle = $("button#toggle")
+let textToggle = $("p#toggle")
 
 formRegister.toggle()
 
@@ -59,9 +60,9 @@ async function register(){
             })
         })
         console.log(response);
-        const message = response.data;
-        if(message.response === "OK"){
+        if(response.response === "OK"){
             alert("You have been registered successfully!")
+            toggleForm()
         }
     } catch (xhr) {
         console.error(xhr.responseText);
@@ -78,8 +79,10 @@ async function register(){
 function toggleForm(){
     if(toggle.text() === "S'Inscrire"){
         toggle.text("Se Connecter")
+        textToggle.text("Vous avez déjà un compte ?")
     } else {
         toggle.text("S'Inscrire")
+        textToggle.text("Vous n'avez pas de compte ?")
     }
     formLogin.toggle()
     formRegister.toggle()
