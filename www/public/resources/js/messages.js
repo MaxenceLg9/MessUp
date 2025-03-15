@@ -81,6 +81,10 @@ async function refreshMessages(idMessage, idSalle, last) {
 
     } catch (xhr) {
         console.error(xhr.responseText);
+        if(xhr.status === 401){
+            alert("Vous avez été déconnecté")
+            disconnect()
+        }
         try {
             const json = JSON.parse(xhr.responseText);
             alert(json.response);
@@ -102,7 +106,6 @@ async function newMessage(content, idSalle) {
             data: JSON.stringify({
                 "idSalle": idSalle,
                 "message": content,
-                "idUser": 1
             }),
             contentType: "application/json",
             headers: {"Authorization": Cookies.get("token")}
@@ -117,6 +120,10 @@ async function newMessage(content, idSalle) {
 
     } catch (xhr) {
         console.error(xhr.responseText);
+        if(xhr.status === 401){
+            alert("Vous avez été déconnecté")
+            disconnect()
+        }
         try {
             const json = JSON.parse(xhr.responseText);
             alert(json.response);
@@ -155,7 +162,7 @@ rooms.children("li").on("click", async function() {
     await refreshMessages(0,salle,1)
 });
 
-btnDisconnect.on("click",function (e){
+btnDisconnect.on("click",() =>{
     disconnect()
 })
 
