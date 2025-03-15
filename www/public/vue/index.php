@@ -39,7 +39,6 @@ $user = getPayload()["login"];
         <div id="content"></div>
         <div class="input-container">
             <label for="message"></label><input type="text" id="message" placeholder="Type your message...">
-            <button id="send">Send</button>
         </div>
         <div class="user">
             <p id="user"><?= $user?></p>

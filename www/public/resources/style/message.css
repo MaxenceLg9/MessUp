@@ -1,8 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    background-color: #10141c;
     height: 100%;
+    color: white;
 }
 
 html {
@@ -71,12 +72,11 @@ section#channel {
 #content {
     overflow-y: auto;
     height: 80%;
-    background: #ecf0f1;
+    background: #3e3959;
     border-radius: 10px;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #ccc;
 }
 
 /* Message Bubbles */
@@ -85,44 +85,33 @@ section#channel {
     padding: 12px;
     max-width: 70%;
     border-radius: 10px;
-    background: #ffffff;
+    background: #2e2b42;
+    color: #d6d6d6;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 .message:hover {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    background-color: #efefef;
-}
-
-.message.sent {
-    align-self: flex-end;
-    background: #1abc9c;
-    color: white;
-}
-
-.message.received {
-    align-self: flex-start;
-    background: #bdc3c7;
+    background: #232132;
 }
 
 .author {
     white-space: nowrap;
     display: flex;
     flex-direction: row;
-    background-color: rgba(248, 248, 248, 0.39);
-    align-items: center;
+    align-items: baseline;
     gap: 15px;
+    margin-bottom: 5px;
 }
 
 .author > * {
-    margin: 5px;
+    margin: 0;
 }
 
 /* Input Box */
 .input-container {
     display: flex;
     padding: 10px;
-    background: #ffffff;
-    border-top: 1px solid #ddd;
+    background: #080815;;
     border-radius: 10px;
     margin-top: 10px;
 }
@@ -134,30 +123,38 @@ section#channel {
     border-radius: 5px;
     font-size: 16px;
     outline: none;
-}
-
-button#send {
-    padding: 10px 15px;
-    border: none;
-    background: #1abc9c;
+    background: transparent;
     color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
 }
 
-button#send:hover {
-    background: #16a085;
+#message::placeholder{
+    color: white;
 }
 
 .user {
-    display: flex;
-    padding: 10px;
-    background: #ffffff;
-    border-top: 1px solid #ddd;
     border-radius: 10px;
     margin-top: 10px;
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 12px 30px;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
 }
+
+.user p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.user::before {
+    content: "👤"; /* Adds a user icon */
+    font-size: 16px;
+}
+
 
 .date {
     color: #a3a3a3;
