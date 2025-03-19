@@ -27,9 +27,7 @@ async function login(){
                 headers:{"Authorization": response.token}
             })
             console.log(page)
-            document.open();
-            document.write(page);
-            document.close();
+            window.location = "/"
         }catch (xhr){
             console.log("Erreur lors de la recupération de la page")
             alert("La page n'a pas pu être récupérée")

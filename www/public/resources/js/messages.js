@@ -136,7 +136,7 @@ async function newMessage(content, idSalle) {
 
 function disconnect(){
     Cookies.set("token","")
-    window.location = "/"
+    window.location = "/auth.php"
 }
 
 divMessage.on("scroll",async function(){
