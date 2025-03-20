@@ -160,6 +160,7 @@ rooms.children("li").on("click", async function() {
     firstID = -1
     time = 125
     await refreshMessages(0,salle,1)
+    divMessage.scrollTop(divMessage[0].scrollHeight);
 });
 
 btnDisconnect.on("click",() =>{
