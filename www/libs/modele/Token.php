@@ -13,6 +13,7 @@ namespace Token {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // This will follow redirects
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json"
         ]);
@@ -21,7 +22,8 @@ namespace Token {
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return (json_decode($response, true)["valid"]);
+//        echo $response;
+        return json_decode($response, true)["valid"];
     }
 
     function apiReloadToken(): string {

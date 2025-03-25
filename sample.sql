@@ -1,8 +1,8 @@
 USE messup;
 
-INSERT INTO users (picture, username, password) VALUES (NULL, 'user1', 'password1'),
-                                                      (NULL, 'user2', 'password2'),
-                                                      (NULL, 'user3', 'password3');
+INSERT INTO users (picture, username, password) VALUES (NULL, 'user1', ''),
+                                                      (NULL, 'user2', ''),
+                                                      (NULL, 'user3', '');
 
 INSERT INTO message (content, time, idUser, idSalle) VALUES ('1', '2019-01-01 00:00:00', 1, 3),
                                                             ('2','2019-01-01 01:00:00',2,3),
@@ -15,4 +15,3 @@ INSERT INTO message (content, time, idUser, idSalle) VALUES ('1', '2019-01-01 00
                                                             ('FF','2019-01-01 01:00:00',2,3),
                                                             ('GG','2019-01-01 01:00:00',2,3),
                                                             ('TY','2019-01-01 01:00:00',2,3);
-

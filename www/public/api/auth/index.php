@@ -48,14 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     //the case to check the token authenticity
-    elseif(isset($jsonBody["token"])){
-        //valid or not
-        if(is_valid_token($jsonBody["token"])){
-            $response = array("response" => "OK", "status" => 200,"valid"=> true);
-        }else{
-            $response = array("response" => "Token is invalid", "status" => 400,"valid"=> false);
-        }
-    }
+    elseif(isset($jsonBody["token"])) //valid or not
+        $response = array("response" => "OK", "status" => 200,"valid"=> is_valid_token($jsonBody["token"]));
     //default case
     else {
         $response = array("response" => "Please provide a token", "status" => 400);
