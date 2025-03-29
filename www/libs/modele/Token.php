@@ -6,7 +6,7 @@ namespace Token {
 
     function apiVerifyToken(): bool {
         $token = get_bearer_token() ?? "";
-        $url = "messup.app/api/auth/";
+        $url = $_SERVER["HTTP_HOST"]."/api/auth/";
         $data = json_encode([
             "token" => $token
         ]);
