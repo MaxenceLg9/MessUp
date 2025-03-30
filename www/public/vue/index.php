@@ -1,6 +1,6 @@
 <?php
 
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
+require_once "../../libs/modele/Token.php";
 
 use function Token\apiVerifyToken,Token\getPayload;
 
@@ -9,6 +9,7 @@ if(!apiVerifyToken()){
     die();
 }
 
+$body = file_get_contents('php://input');
 $body = file_get_contents('php://input');
 
 $user = getPayload()["login"];

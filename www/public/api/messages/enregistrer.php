@@ -1,7 +1,7 @@
 <?php
 
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Message.php";
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
+require_once "../../libs/modele/Message.php";
+require_once "../../libs/modele/Token.php";
 
 use function Message\nouveauMessage;
 use function Token\apiVerifyToken,Token\getPayload,Token\apiReloadToken;

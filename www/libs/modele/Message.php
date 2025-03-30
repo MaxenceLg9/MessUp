@@ -38,7 +38,7 @@ namespace Message {
 //    echo $dateString;
     }
 
-    require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/db/connexion.php";
+    require_once "../../libs/db/connexion.php";
 
     //créé un nouveau message et le renvoie si aucun problème
     function nouveauMessage(string $message,int $idSalle, string $idUser): array
