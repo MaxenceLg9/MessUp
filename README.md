@@ -12,5 +12,9 @@ Nécessite une authentification.
 - POST /api/auth/index.php pour s'authentifier, créer l'utilisateur ou vérifier le token
 - PUT /api/auth/index.php pour rafraichir le mdp
 
+## PAGES
+
+- index.php : page d'accueil et de chats
+- auth.php : page de connexion/enregistrement
 
 URL : messup.alwaysdata.net
