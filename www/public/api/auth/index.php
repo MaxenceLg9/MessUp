@@ -1,7 +1,7 @@
 <?php
 
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/messup/libs/modele/Token.php";
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/messup/libs/modele/Users.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Users.php";
 
 use function Users\checkUser;
 use function Users\newUser;

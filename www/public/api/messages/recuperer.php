@@ -1,7 +1,7 @@
 <?php
 
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/messup/libs/modele/Token.php";
-require_once "{$_SERVER["DOCUMENT_ROOT"]}/messup/libs/modele/Message.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Token.php";
+require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/modele/Message.php";
 
 use function Message\getLastMessages;
 use function Message\getPreviousMessages;
