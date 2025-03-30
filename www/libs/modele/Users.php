@@ -4,7 +4,7 @@ namespace Users {
 
     use PDO;
 
-    require_once "../../libs/db/connexion.php";
+    require_once "{$_SERVER["DOCUMENT_ROOT"]}/../libs/db/connexion.php";
 
     function newUser(string $username, string $password): array
     {
