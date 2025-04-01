@@ -7,6 +7,26 @@ let salle = 1
 let rooms = $("ul#rooms");
 let btnDisconnect = $("li#disconnect")
 
+let ajaxQueue = {};
+
+function addToQueue(key, func) {
+    if (!ajaxQueue[key]) {
+        ajaxQueue[key] = func;
+    }
+}
+
+function processQueue() {
+    for (let key in ajaxQueue) {
+        if (ajaxQueue.hasOwnProperty(key)) {
+            console.log(ajaxQueue)
+            ajaxQueue[key]().then(
+                delete ajaxQueue[key] // Clear the queue after processing
+            )
+            break; // Process one function at a time
+        }
+    }
+}
+
 function createMessage(line) {
     lastID = Math.max(lastID, line.idMessage)
     const author = line.username;
@@ -48,7 +68,7 @@ async function refreshMessages(idMessage, idSalle, last) {
             headers: {"Authorization": Cookies.get("token")}
         });
 
-        console.log(response);
+        // console.log(response);
         const messages = response.data;
 
         if (messages.length > 0) {
@@ -74,13 +94,14 @@ async function refreshMessages(idMessage, idSalle, last) {
             if (messages.length < 20 && !hasHeaderRoom()) {
                 divMessage.prepend(createHeaderRoom(idSalle));
             }
-        }
+        }else if(idMessage === 0)
+            divMessage.scrollTop(divMessage[0].scrollHeight);
         if (idMessage === 0 && last === 1 && messages.length < 20 && !hasHeaderRoom()) {
             divMessage.prepend(createHeaderRoom(idSalle));
         }
 
     } catch (xhr) {
-        console.error(xhr.responseText);
+        // console.error(xhr.responseText);
         if(xhr.status === 401){
             alert("Vous avez été déconnecté")
             disconnect()
@@ -89,7 +110,7 @@ async function refreshMessages(idMessage, idSalle, last) {
             const json = JSON.parse(xhr.responseText);
             alert(json.response);
         } catch (e) {
-            console.error("Could not parse response as JSON:", xhr.responseText);
+            // console.error("Could not parse response as JSON:", xhr.responseText);
             alert("An error occurred, but the response is not valid JSON.");
         }
     }
@@ -99,7 +120,6 @@ async function refreshMessages(idMessage, idSalle, last) {
 
 async function newMessage(content, idSalle) {
     console.log("Sending message:", content, "at", idSalle);
-
     try {
         const response = await $.ajax("/api/messages/enregistrer.php", {
             method: "POST",
@@ -111,7 +131,7 @@ async function newMessage(content, idSalle) {
             headers: {"Authorization": Cookies.get("token")}
         });
 
-        console.log(response);
+        // console.log(response);
         const message = response.data;
 
         divMessage.append(createMessage(message[0]));
@@ -119,7 +139,7 @@ async function newMessage(content, idSalle) {
         inputCreateMessage.val("");
 
     } catch (xhr) {
-        console.error(xhr.responseText);
+        // console.error(xhr.responseText);
         if(xhr.status === 401){
             alert("Vous avez été déconnecté")
             disconnect()
@@ -128,7 +148,7 @@ async function newMessage(content, idSalle) {
             const json = JSON.parse(xhr.responseText);
             alert(json.response);
         } catch (e) {
-            console.error("Could not parse response as JSON:", xhr.responseText);
+            // console.error("Could not parse response as JSON:", xhr.responseText);
             alert("An error occurred, but the response is not valid JSON.");
         }
     }
@@ -142,14 +162,14 @@ function disconnect(){
 divMessage.on("scroll",async function(){
     if(divMessage.scrollTop() === 0) {
         console.log("Scrolling and loading oldest messages")
-        await refreshMessages(firstID, salle, 0)
+        addToQueue("first",() => refreshMessages(firstID, salle, 0))
     }
 })
 inputCreateMessage.on("keypress",async function(event){
     if(event.keyCode === 13){
         console.log("Sending message")
-        console.log(inputCreateMessage.val())
-        await newMessage(inputCreateMessage.val(),salle)
+        // console.log(inputCreateMessage.val())
+        addToQueue("new",() => newMessage(inputCreateMessage.val(),salle))
     }
 })
 
@@ -159,8 +179,8 @@ rooms.children("li").on("click", async function() {
     lastID = 0
     firstID = -1
     time = 125
-    await refreshMessages(0,salle,1)
-    divMessage.scrollTop(divMessage[0].scrollHeight);
+    addToQueue("last",() => refreshMessages(0,salle,1))
+
 });
 
 btnDisconnect.on("click",() =>{
@@ -169,5 +189,10 @@ btnDisconnect.on("click",() =>{
 
 
 rooms.children("li").first().trigger("click");
-setInterval(async () => await refreshMessages(lastID,salle,1),2000)
-// $(document).ready(() => refreshMessages(0,salle,1))
+setInterval(async () => {
+    addToQueue("last",() => refreshMessages(lastID,salle,1))
+},2000)
+
+setInterval(() => {
+    processQueue()
+},100)
