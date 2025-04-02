@@ -20,3 +20,4 @@ Nécessite une authentification.
 Necessite une authentification.
 
 URL : messup.alwaysdata.net
+Aucune autre information requise, vous pouvez créer un compte
